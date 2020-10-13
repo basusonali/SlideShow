@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<html>
+
+	<div>
+	
+		<canvas id="drawing" width="800" height="500"
+				style="background-color:#ffffff; z-index: 0; display:none">
+			Your browser does not support the HTML5 Canvas feature... 
+		</canvas>		
+		<canvas id="drawingTmp" width="800" height="500" style="z-index: 1; display:none"></canvas>
+		
+	</div>
+						
+	<script>
+	
+	//-------------------------------------------------------------------------------- 
+	var cansvasLeft;
+	var cansvasTop;
+	var BoxLeft;
+	var BoxTop;
+	var BoxWidth;
+	var BoxHeight;
+	var pic;
+	var counter = 0;
+	var TOTALCOUNT = 10;
+	//-------------------------------------------------------------------------------- 
+	
+	//--------------------------------------------------------------------------------  
+	function RepositionCanvas(Canvas) {	  
+		var viewportWidth = window.innerWidth;
+		var viewportHeight = window.innerHeight;
+
+		canvasWidth = viewportWidth;
+		canvasHeight = viewportHeight * 19/20;
+		Canvas.style.position = "fixed";
+		Canvas.setAttribute("width", canvasWidth);
+		Canvas.setAttribute("height", canvasHeight);
+		cansvasLeft = (viewportWidth - canvasWidth) / 2;
+		cansvasTop = (viewportHeight - canvasHeight) / 2;
+		Canvas.style.top = cansvasTop + "px";
+		Canvas.style.left = cansvasLeft + "px";	
+	}
+	//--------------------------------------------------------------------------------
+			
+	//---------------------------------------------------------------------------
+	var isFireFox = false;
+	//---------------------------------------------------------------------------
+	
+	//---------------------------------------------------------------------------
+	function chkIfFireFox()
+	{
+	
+		if (navigator.userAgent.search("Firefox") >= 0)	
+			isFireFox = true;
+	
+	}
+	//---------------------------------------------------------------------------
+
+	//--------------------------------------------------------------------------------  
+	 // The general-purpose event handler. This function just determines the mouse 
+	  // position relative to the canvas element.
+	//------------------------------------------------------------------------------
+	  function Event_Canvas (ev) {
+			if (ev.layerX || ev.layerX == 0) { 
+				if(isFireFox) {
+					ev._x = ev.layerX;
+					ev._y = ev.layerY;	
+				} 
+				else 
+				{										
+					ev._x = ev.offsetX;
+					ev._y = ev.offsetY;
+				} 
+			} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+				ev._x = ev.offsetX;
+				ev._y = ev.offsetY;
+			} 
+
+			clickAction(ev._x, ev._y);
+			
+	  }
+	//---------------------------------------------------------------------------
+	
+	//-------------------------------------------------------------------
+	function clickAction(x, y){
+	
+		if(yetToStart){
+				
+				counter++;
+				pic.src = "Imgs/" + counter + ".JPG";
+				drawBkGnd();
+				yetToStart = false;
+				
+			} else {
+			
+				if( x >= cansvasLeft && x <= cansvasLeft + canvasWidth /2
+								&& y >= cansvasTop && y <= cansvasTop + canvasHeight) {
+					
+					counter--;
+					if(counter == 0) counter = TOTALCOUNT;
+					pic.src = "Imgs/" + counter + ".JPG";
+					drawBkGnd();
+					
+					
+				} else {
+				
+					counter++;
+					if(counter == TOTALCOUNT + 1) counter = 1;
+					pic.src = "Imgs/" + counter + ".JPG";
+					drawBkGnd();					
+								
+				}			
+			}
+			
+			drawBox();
+			DrawBtnText("" + counter, "5");
+	
+	}
+	//-------------------------------------------------------------------
+	
+	//-------------------------------------------------------------------
+	function drawBox(){
+	  	  
+	  contextTmp.lineWidth = "1";
+	  contextTmp.fillStyle = "Tan";
+	  contextTmp.strokeStyle = "Black";
+	  
+	  BoxLeft = canvasWidth - canvasWidth / 20;
+	  BoxTop = canvasHeight - canvasHeight / 11;
+	  BoxWidth = canvasWidth / 25;
+	  BoxHeight = canvasWidth / 25;
+	  
+	  contextTmp.fillRect(BoxLeft, BoxTop, BoxWidth, BoxHeight);
+	  contextTmp.strokeRect(BoxLeft, BoxTop, BoxWidth, BoxHeight);
+
+	  }
+	//--------------------------------------------------------------------
+	
+	//--------------------------------------------------------------------------------  
+	function DrawBtnText(CText, lineWidth) {
+		var textFontSize = canvasWidth / 50;
+		
+		contextTmp.lineWidth = lineWidth;
+		var Font = textFontSize.toString() + 'px ' + FONT_FAMILY;
+		contextTmp.font = Font;
+		contextTmp.textBaseline = 'top';
+		contextTmp.strokeStyle = "Black";
+		contextTmp.fillStyle = "Black";
+		textHeight = textFontSize.toString() * 1.5;
+		textDimensions = contextTmp.measureText(CText); 
+		contextTmp.fillText(CText, BoxLeft + BoxWidth / 2 - textDimensions.width / 2, BoxTop + BoxHeight / 3);
+	}
+	//-------------------------------------------------------------------------------- 
+	
+	//--------------------------------------------------------------------
+	function drawBkGnd() {
+		pic.addEventListener('load', function() { var canvas = context.canvas ;
+	   var hRatio = canvas.width  / this.width    ;
+	   var vRatio =  canvas.height / this.height  ;
+	   var ratio  = Math.min ( hRatio, vRatio );
+	   var centerShift_x = ( canvas.width - this.width*ratio ) / 2;
+	   var centerShift_y = ( canvas.height - this.height*ratio ) / 2; 
+	   context.clearRect(0,0,canvas.width, canvas.height);
+	   context.drawImage(this, 0,0, this.width, this.height,
+						  centerShift_x,centerShift_y,this.width*ratio, this.height*ratio);}, false);
+	}
+	//--------------------------------------------------------------------
+	
+	//--------------------------------------------------------------------	
+	var FONT_FAMILY = "Tempus Sans ITC";
+	//--------------------------------------------------------------------
+		
+	//--------------------------------------------------------------------------
+	var canvas;
+	var context;
+	var canvasTmp;
+	var contextTmp;
+	var yetToStart = true;
+	//--------------------------------------------------------------------------
+	function DoFirst(){
+	
+	// Find the background canvas element.
+		canvas = document.getElementById('drawing');
+		if (!canvas) {
+		  alert('Error: I cannot find the background canvas element!');
+		  return;
+		}
+
+		if (!canvas.getContext) {
+		  alert('Error: no canvas.getContext!');
+		  return;
+		}
+
+		// Get the 2D canvas context.
+		context = canvas.getContext('2d');
+		if (!context) {
+		  alert('Error: failed to getContext!');
+		  return;
+		}
+		
+		// Find the foreground canvas element.
+		canvasTmp = document.getElementById('drawingTmp');
+		if (!canvasTmp) {
+		  alert('Error: I cannot find the foreground canvas element!');
+		  return;
+		}
+		
+		 if (!canvasTmp.getContext) {
+		  alert('Error: no canvasTmp.getContext!');
+		  return;
+		}
+
+		// Get the 2D canvas context.
+		contextTmp = canvasTmp.getContext('2d');
+		if (!contextTmp) {
+		  alert('Error: failed to getContext!');
+		  return;
+		}
+		
+		chkIfFireFox();
+		
+		RepositionCanvas(canvas);
+		RepositionCanvas(canvasTmp);
+		
+		canvas.style.display = 'block';
+		canvasTmp.style.display = 'block';
+		
+		pic = new Image();
+		pic.src = "Imgs/1.jpg";
+		drawBkGnd();
+				
+		canvasTmp.addEventListener('mousedown', Event_Canvas, false);
+	}
+	
+	//--------------------------------------------------------------------------
+	function DoOnResize() {
+		RepositionCanvas(canvas);
+		RepositionCanvas(canvasTmp);
+		
+		if(yetToStart) pic.src = "Imgs/img.jpg";
+			else pic.src = "Imgs/" + counter + ".JPG";
+		drawBkGnd();	
+		
+		if(yetToStart == false){
+			drawBox();
+			DrawBtnText("" + counter, "5");
+		}
+	}
+
+	//----------------------------------------------------------------------------
+	
+	//----------------------------------------------------------------------------
+	function doKeyDown(e){
+
+		keyPressAction(e.keyCode);
+		
+	}
+	//----------------------------------------------------------------------------
+	
+	//-------------------------------------------------------------------
+	function keyPressAction(keyVal){
+	
+		if(yetToStart){
+				
+				counter++;
+				pic.src = "Imgs/" + counter + ".JPG";
+				drawBkGnd();
+				yetToStart = false;
+				
+			} else {
+			
+				if( keyVal == 37) {
+					
+					counter--;
+					if(counter == 0) counter = TOTALCOUNT;
+					pic.src = "Imgs/" + counter + ".JPG";
+					drawBkGnd();
+					
+					
+				} else if( keyVal == 39) {
+				
+					counter++;
+					if(counter == TOTALCOUNT + 1) counter = 1;
+					pic.src = "Imgs/" + counter + ".JPG";
+					drawBkGnd();					
+								
+				}			
+			}
+			
+			drawBox();
+			DrawBtnText("" + counter, "5");
+	
+	}
+	//-------------------------------------------------------------------
+	
+	//----------------------------------------------------------------------------
+	window.addEventListener('load', DoFirst, false);
+	window.addEventListener('resize', DoOnResize, false);
+	window.addEventListener('keydown', doKeyDown, true);
+	//----------------------------------------------------------------------------
+	
+	</script>
+		
+  </body>
+  
+</html>
