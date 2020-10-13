@@ -89,7 +89,7 @@
 		if(yetToStart){
 				
 				counter++;
-				pic.src = "Imgs/" + counter + ".jpg";
+				pic.src = counter + ".jpg";
 				drawBkGnd();
 				yetToStart = false;
 				
@@ -100,7 +100,7 @@
 					
 					counter--;
 					if(counter == 0) counter = TOTALCOUNT;
-					pic.src = "Imgs/" + counter + ".jpg";
+					pic.src = counter + ".jpg";
 					drawBkGnd();
 					
 					
@@ -108,7 +108,7 @@
 				
 					counter++;
 					if(counter == TOTALCOUNT + 1) counter = 1;
-					pic.src = "Imgs/" + counter + ".jpg";
+					pic.src = counter + ".jpg";
 					drawBkGnd();					
 								
 				}			
@@ -228,7 +228,7 @@
 		canvasTmp.style.display = 'block';
 		
 		pic = new Image();
-		pic.src = "Imgs/Img.jpg";
+		pic.src = "Img.jpg";
 		drawBkGnd();
 				
 		canvasTmp.addEventListener('mousedown', Event_Canvas, false);
@@ -239,8 +239,8 @@
 		RepositionCanvas(canvas);
 		RepositionCanvas(canvasTmp);
 		
-		if(yetToStart) pic.src = "Imgs/img.jpg";
-			else pic.src = "Imgs/" + counter + ".jpg";
+		if(yetToStart) pic.src = "img.jpg";
+			else pic.src = counter + ".jpg";
 		drawBkGnd();	
 		
 		if(yetToStart == false){
@@ -265,7 +265,7 @@
 		if(yetToStart){
 				
 				counter++;
-				pic.src = "Imgs/" + counter + ".jpg";
+				pic.src = counter + ".jpg";
 				drawBkGnd();
 				yetToStart = false;
 				
@@ -275,7 +275,7 @@
 					
 					counter--;
 					if(counter == 0) counter = TOTALCOUNT;
-					pic.src = "Imgs/" + counter + ".jpg";
+					pic.src = counter + ".jpg";
 					drawBkGnd();
 					
 					
@@ -283,7 +283,7 @@
 				
 					counter++;
 					if(counter == TOTALCOUNT + 1) counter = 1;
-					pic.src = "Imgs/" + counter + ".jpg";
+					pic.src = counter + ".jpg";
 					drawBkGnd();					
 								
 				}			
